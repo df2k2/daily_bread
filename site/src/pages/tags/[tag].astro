@@ -1,0 +1,52 @@
+---
+import Base from "../../layouts/Base.astro";
+import ArchiveBrowser from "../../components/ArchiveBrowser";
+import { getDevotionalsFor, monthName, t, tagSlug, url } from "../../lib/i18n";
+import { serializeEntries } from "../../lib/serialize";
+
+const lang = "en" as const;
+const strings = t(lang);
+
+export async function getStaticPaths() {
+  const all = await getDevotionalsFor("en");
+  const slugs = new Map<string, string>();
+  for (const e of all) {
+    for (const tag of e.data.tags ?? []) {
+      const slug = tagSlug(tag);
+      if (slug && !slugs.has(slug)) slugs.set(slug, tag);
+    }
+  }
+  return Array.from(slugs.entries()).map(([slug, tag]) => ({
+    params: { tag: slug },
+    props: { tag },
+  }));
+}
+
+const { tag } = Astro.props as { tag: string };
+const all = await getDevotionalsFor(lang);
+const filtered = all.filter((e) => (e.data.tags ?? []).some((t) => tagSlug(t) === tagSlug(tag)));
+const browserEntries = serializeEntries(filtered, lang);
+const monthNames = Array.from({ length: 12 }, (_, i) => monthName(i, lang));
+const tagPathPrefix = url(lang, "/tags/");
+---
+
+<Base lang={lang} title={`${strings.tagged_with(tag)} — ${strings.site_title}`}>
+  <p class="mb-2 text-sm" style="color: var(--muted-foreground)">
+    <a href={url(lang, "/archive")} class="hover:underline">{strings.archive}</a>
+    <span class="px-1">/</span>
+    <span>{strings.tags}</span>
+  </p>
+  <h1 class="mb-6 text-2xl font-semibold tracking-tight">#{tag}</h1>
+
+  <ArchiveBrowser
+    client:load
+    entries={browserEntries}
+    lang={lang}
+    searchPlaceholder={strings.search_placeholder}
+    countLabel={(n, total) => strings.of_entries(n, total)}
+    noResultsLabel={strings.no_results}
+    viewLabel={strings.view}
+    monthNames={monthNames}
+    tagPathPrefix={tagPathPrefix}
+  />
+</Base>

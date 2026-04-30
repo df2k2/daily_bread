@@ -133,10 +133,27 @@ The notifier picks the localized subject + body and the locale-specific URL base
 
 ## RSS and search
 
-Each locale has its own feed and search index:
+Each locale has its own feed, archive, and tag pages:
 
 - `/rss.xml` and `/pt/rss.xml` — generated at build time. The base layout sets the auto-discovery `<link>` to the current locale's feed.
-- `/archive` and `/pt/archive` — client-side search backed by `/search-index.json` and `/pt/search-index.json` respectively (title, reference, slot, date, snippet).
+- `/archive` and `/pt/archive` — full archive with a filter sidebar (year, month, book, tag) and a client-side search box (matches title, reference, tags, excerpt). Filters compose, persist in the URL query string, and can be cleared individually.
+- `/tags/<tag>` and `/pt/tags/<tag>` — per-tag deep-link pages. Tags appear on every post; clicking a tag chip jumps to its filtered list.
+- The home page shows **Today's Posts** as hero cards (large image, excerpt, tags, "Read this post" button) followed by the **10 most recent** posts as compact rows (small left-aligned image, title, date, book/verse, tags, excerpt).
+
+## Multiple posts per day
+
+Filenames embed the generation timestamp and a slug of the reference, so manually triggering the workflow many times in one day never overwrites existing content:
+
+```
+content/2026/04/30-0830-philippians-4-6-7-en.md
+content/2026/04/30-0830-philippians-4-6-7-pt.md
+content/2026/04/30-0830-philippians-4-6-7.png
+content/2026/04/30-1430-psalm-23-en.md
+content/2026/04/30-1430-psalm-23-pt.md
+content/2026/04/30-1430-psalm-23.png
+```
+
+Posts list newest-first across the site by `datetime` (falling back to `date`).
 
 ## Costs and caps
 

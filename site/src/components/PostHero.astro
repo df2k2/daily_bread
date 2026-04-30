@@ -1,0 +1,75 @@
+---
+import { Image } from "astro:assets";
+import type { CollectionEntry } from "astro:content";
+import { entryUrl, localizedDate, tagUrl, type Lang } from "../lib/i18n";
+
+interface Props {
+  entry: CollectionEntry<"devotionals">;
+  lang: Lang;
+  readLabel: string;
+}
+
+const { entry, lang, readLabel } = Astro.props;
+const href = entryUrl(lang, entry);
+const date = localizedDate(entry.data.date, lang);
+const tags = entry.data.tags ?? [];
+---
+
+<article
+  class="rounded-2xl border bg-(--background) p-6"
+  style="border-color: var(--border)"
+>
+  <header class="mb-4">
+    <a href={href} class="block">
+      <h2 class="text-2xl font-semibold tracking-tight hover:underline">
+        {entry.data.title}
+      </h2>
+    </a>
+    <p class="mt-1 text-sm" style="color: var(--muted-foreground)">
+      <span>{date}</span>
+      <span class="px-2">·</span>
+      <span class="font-medium">{entry.data.reference}</span>
+      <span class="opacity-70">({entry.data.translation})</span>
+    </p>
+  </header>
+
+  {entry.data.image && (
+    <a href={href} class="block">
+      <Image
+        src={entry.data.image}
+        alt={entry.data.title}
+        class="mb-4 w-full rounded-xl object-cover"
+        style="aspect-ratio: 3/2; max-height: 380px"
+        loading="lazy"
+      />
+    </a>
+  )}
+
+  {entry.data.excerpt && (
+    <p class="mb-4 text-base leading-relaxed">
+      {entry.data.excerpt}
+    </p>
+  )}
+
+  {tags.length > 0 && (
+    <div class="mb-4 flex flex-wrap gap-2">
+      {tags.map((tag) => (
+        <a
+          href={tagUrl(lang, tag)}
+          class="rounded-full border px-3 py-1 text-xs font-medium transition-colors hover:bg-(--muted)"
+          style="border-color: var(--border); color: var(--muted-foreground)"
+        >
+          #{tag}
+        </a>
+      ))}
+    </div>
+  )}
+
+  <a
+    href={href}
+    class="inline-block rounded-lg px-4 py-2 text-sm font-medium transition-colors"
+    style="background: var(--primary); color: var(--primary-foreground)"
+  >
+    {readLabel} →
+  </a>
+</article>

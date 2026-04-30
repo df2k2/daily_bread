@@ -14,8 +14,14 @@ _LANG_FIELDS = {
         "title": {"type": "string"},
         "story": {"type": "string"},
         "lesson": {"type": "string"},
+        "tags": {
+            "type": "array",
+            "items": {"type": "string"},
+            "minItems": 3,
+            "maxItems": 6,
+        },
     },
-    "required": ["title", "story", "lesson"],
+    "required": ["title", "story", "lesson", "tags"],
 }
 
 SCHEMA = {
