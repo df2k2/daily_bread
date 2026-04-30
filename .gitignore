@@ -1,0 +1,16 @@
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+.env
+.env.local
+
+node_modules/
+.astro/
+site/dist/
+.pnpm-store/
+
+.DS_Store
+.idea/
+.vscode/

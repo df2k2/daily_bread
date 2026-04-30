@@ -1,0 +1,39 @@
+schedule:
+  frequency: 1
+  times: ["06:00"]
+  timezone: "America/Los_Angeles"
+
+content:
+  translation: "WEB"
+  reading_plan: "random"
+  passage_length: "short"
+  tone: "warm, conversational, hopeful"
+
+ai:
+  provider: "gemini"
+  text_model: "gemini-3.1-pro"
+  image_model: "gemini-3.1-flash-image"
+  use_search_grounding: false
+  validate_verses: true
+
+image:
+  enabled: true
+  style: "soft watercolor, peaceful, biblical scene, no faces of deity, symbolic"
+  aspect_ratio: "3:2"
+  resolution: "1536x1024"
+
+notifications:
+  email:
+    enabled: false
+    provider: "resend"
+    from: "Daily Bread <devotional@example.com>"
+    recipients: []
+  sms:
+    enabled: false
+    provider: "twilio"
+    from: "+15550000000"
+    recipients: []
+
+site:
+  title: "Daily Bread"
+  base_url: "https://username.github.io/daily_bread"

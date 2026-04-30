@@ -1,0 +1,53 @@
+@import "tailwindcss";
+@source "../../node_modules/rizzui/dist";
+@plugin "@tailwindcss/forms";
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+
+:root {
+  --background: oklch(100% 0 0);
+  --foreground: oklch(40.17% 0 0);
+  --muted: oklch(96.05% 0 0);
+  --muted-foreground: oklch(56.41% 0 0);
+  --primary: oklch(54.65% 0.215 262.88);
+  --primary-foreground: oklch(98% 0 0);
+  --border: oklch(92.27% 0 0);
+  --ring: oklch(54.65% 0.215 262.88);
+}
+
+[data-theme="dark"] {
+  --background: oklch(15.91% 0 0);
+  --foreground: oklch(92.49% 0 0);
+  --muted: oklch(22% 0 0);
+  --muted-foreground: oklch(71.1% 0 0);
+  --primary: oklch(72% 0.155 262.88);
+  --primary-foreground: oklch(15% 0 0);
+  --border: oklch(27% 0 0);
+  --ring: oklch(72% 0.155 262.88);
+}
+
+html,
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+.prose-devotional {
+  max-width: 68ch;
+  line-height: 1.75;
+}
+.prose-devotional blockquote {
+  border-left: 3px solid var(--primary);
+  padding-left: 1rem;
+  font-style: italic;
+  color: var(--muted-foreground);
+}
+.prose-devotional h2 {
+  margin-top: 2rem;
+  font-weight: 600;
+  font-size: 1.25rem;
+}
+.prose-devotional ol {
+  list-style: decimal;
+  padding-left: 1.5rem;
+}

@@ -1,0 +1,37 @@
+---
+import { getCollection, render } from "astro:content";
+import Base from "../layouts/Base.astro";
+
+export async function getStaticPaths() {
+  const all = await getCollection("devotionals");
+  return all.map((entry) => ({
+    params: { slug: entry.id.replace(/\.md$/, "") },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+
+const formattedDate = entry.data.date.toLocaleDateString("en-US", {
+  weekday: "long",
+  month: "long",
+  day: "numeric",
+  year: "numeric",
+});
+---
+
+<Base title={`${entry.data.title} — Daily Bread`}>
+  <article class="prose-devotional">
+    <header class="mb-6">
+      <p class="text-xs uppercase tracking-wide" style="color: var(--muted-foreground)">
+        {formattedDate} · {entry.data.slot}
+      </p>
+      <h1 class="mt-2 text-3xl font-semibold tracking-tight">{entry.data.title}</h1>
+      <p class="mt-1 text-sm" style="color: var(--muted-foreground)">
+        {entry.data.reference} ({entry.data.translation})
+      </p>
+    </header>
+    <Content />
+  </article>
+</Base>
