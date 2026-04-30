@@ -13,39 +13,39 @@ def _permalink(base_url: str, year: str, month: str, day: str, slot: str) -> str
     return f"{base_url.rstrip('/')}/{year}/{month}/{day}-{slot}"
 
 
-def send_email(cfg: dict[str, Any], subject: str, html: str, text: str) -> None:
+def _wants(recipient: dict[str, Any], slot: str, channel: str) -> bool:
+    slots = recipient.get("slots") or []
+    if slots and slot not in slots:
+        return False
+    channels = recipient.get("channels") or ["email", "sms"]
+    if channel not in channels:
+        return False
+    return bool(recipient.get(channel))
+
+
+def _send_email(from_addr: str, to: str, subject: str, html: str, text: str) -> None:
     api_key = os.environ.get("RESEND_API_KEY")
     if not api_key:
         raise RuntimeError("RESEND_API_KEY is not set.")
-    recipients = cfg.get("recipients") or []
-    if not recipients:
-        return
     requests.post(
         RESEND_URL,
         headers={"Authorization": f"Bearer {api_key}"},
-        json={
-            "from": cfg["from"],
-            "to": recipients,
-            "subject": subject,
-            "html": html,
-            "text": text,
-        },
+        json={"from": from_addr, "to": [to], "subject": subject, "html": html, "text": text},
         timeout=30,
     ).raise_for_status()
 
 
-def send_sms(cfg: dict[str, Any], body: str) -> None:
+def _send_sms(from_number: str, to: str, body: str) -> None:
     sid = os.environ.get("TWILIO_SID")
     token = os.environ.get("TWILIO_TOKEN")
     if not sid or not token:
         raise RuntimeError("TWILIO_SID / TWILIO_TOKEN are not set.")
-    for to in cfg.get("recipients") or []:
-        requests.post(
-            TWILIO_URL.format(sid=sid),
-            auth=(sid, token),
-            data={"From": cfg["from"], "To": to, "Body": body},
-            timeout=30,
-        ).raise_for_status()
+    requests.post(
+        TWILIO_URL.format(sid=sid),
+        auth=(sid, token),
+        data={"From": from_number, "To": to, "Body": body},
+        timeout=30,
+    ).raise_for_status()
 
 
 def notify(
@@ -56,6 +56,10 @@ def notify(
     title: str,
     reference: str,
 ) -> None:
+    recipients = cfg.get("recipients") or []
+    if not recipients:
+        return
+
     link = _permalink(
         site_cfg["base_url"],
         f"{today:%Y}",
@@ -70,9 +74,13 @@ def notify(
         f'<p><a href="{link}">Read it here</a></p>'
     )
     text = f"{title}\n{reference}\n{link}"
-    sms = f"Daily Bread ({today:%-m/%-d} {slot[:3].upper()}): {reference} — {link}"
+    sms_body = f"Daily Bread ({today:%-m/%-d} {slot[:3].upper()}): {reference} — {link}"
 
-    if cfg.get("email", {}).get("enabled"):
-        send_email(cfg["email"], subject, html, text)
-    if cfg.get("sms", {}).get("enabled"):
-        send_sms(cfg["sms"], sms)
+    email_cfg = cfg.get("email") or {}
+    sms_cfg = cfg.get("sms") or {}
+
+    for r in recipients:
+        if _wants(r, slot, "email"):
+            _send_email(email_cfg["from"], r["email"], subject, html, text)
+        if _wants(r, slot, "sms"):
+            _send_sms(sms_cfg["from"], r["sms"], sms_body)

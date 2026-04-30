@@ -10,7 +10,6 @@ CONFIG_PATH = ROOT / "config.yml"
 DATA_DIR = ROOT / "data"
 CONTENT_DIR = ROOT / "content"
 PROMPTS_DIR = ROOT / "prompts"
-BIBLE_CACHE = DATA_DIR / "bibles" / "web.json"
 STATE_PATH = DATA_DIR / "state.json"
 READING_PLAN_PATH = DATA_DIR / "reading_plan.json"
 

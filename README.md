@@ -66,9 +66,14 @@ A separate `healthcheck.yml` workflow runs hourly and opens a GitHub issue if no
 
 `type: "daily"` plans support a `morning`/`evening` reading list per day. The generator picks one reading per slot and advances to the next day after the evening run.
 
-## Translation
+## Translations
 
-v1 ships with WEB (public domain). The verse fetcher uses [bible-api.com](https://bible-api.com) and caches results into `data/bibles/web.json`, which is committed back to the repo so subsequent runs are deterministic and offline-safe. NLT support requires a Tyndale license — see plan §2.1.
+`content.translation` in `config.yml` accepts any of:
+
+- `WEB`, `KJV`, `ASV`, `BBE` — public domain, fetched from [bible-api.com](https://bible-api.com) and cached at `data/bibles/<translation>.json`.
+- `NLT` — **not bundled**. Requires a Tyndale license. To enable: implement a fetcher that returns `(text, verses)` from your licensed source and route it from `LICENSED` in `scripts/fetch_verse.py`.
+
+Switching translations is a config change; existing devotionals retain the translation they were generated under (recorded in frontmatter).
 
 ## Verse validation
 
@@ -81,6 +86,30 @@ When `ai.validate_verses: true` (default), the fetched passage is checked for:
 - Plain-text sanity (length, no model-refusal phrases)
 
 A failure raises before commentary generation, so a bad fetch never reaches the site.
+
+## Recipients
+
+Each recipient in `config.yml` → `notifications.recipients` is an object that opts into channels and slots:
+
+```yaml
+recipients:
+  - name: "Alice"
+    email: "alice@example.com"
+    slots: ["morning"]        # only morning notifications
+    channels: ["email"]
+  - name: "Bob"
+    email: "bob@example.com"
+    sms: "+15551234567"
+    slots: []                 # both slots
+    channels: ["email", "sms"]
+```
+
+The notifier sends per-recipient and per-channel — Alice gets a morning email only, Bob gets both slots on both channels. Empty `slots` means all slots; omitting a channel field skips that channel even if it's listed.
+
+## RSS and search
+
+- `/rss.xml` is generated at build time from the content collection. Auto-discovery `<link>` is in the base layout so feed readers find it.
+- `/archive` ships a client-side search box backed by a static `/search-index.json` (title, reference, slot, date, snippet). Pure browser-side filtering — no extra infra.
 
 ## Costs and caps
 
