@@ -1,28 +1,31 @@
 ---
 date: '2026-04-30'
 slot: morning
-reference: Romans 12:1-2
+reference: 2 Corinthians 4:16-18
 translation: WEB
-title: The Shape of a Transformed Life
+title: The Weight of Unseen Glory
 ai:
   text: gemini-3.1-pro-preview
-  image: gemini-3.1-pro-preview
+  image: gemini-3.1-flash-image-preview
+image: 30-morning.png
 ---
 
+![Devotional image](30-morning.png)
+
 ## The Passage
-> Therefore I urge you, brothers, by the mercies of God, to present your bodies a living sacrifice, holy, acceptable to God, which is your spiritual service. Don’t be conformed to this world, but be transformed by the renewing of your mind, so that you may prove what is the good, well-pleasing, and perfect will of God.
+> Therefore we don’t faint, but though our outward man is decaying, yet our inward man is renewed day by day. For our light affliction, which is for the moment, works for us more and more exceedingly an eternal weight of glory; while we don’t look at the things which are seen, but at the things which are not seen. For the things which are seen are temporal, but the things which are not seen are eternal.
 
 ## What's Happening Here
-The apostle Paul is writing to the early Christians in Rome. After spending eleven chapters detailing the profound mercies and grace of God, he shifts to practical instruction. He explains that the natural response to God's love is to offer our entire lives back to him, actively resisting the patterns of the surrounding culture.
+The Apostle Paul is writing to the church in Corinth, reflecting on the intense hardships and physical suffering he has endured in his ministry. He has just described himself and his companions as fragile clay jars holding the immense treasure of the gospel. In this passage, Paul contrasts the visible decay of the physical body with the invisible, continuous renewal of the spirit. He encourages his readers to shift their focus from present struggles to eternal realities.
 
 ## What This Means for Today
-It is easy to passively absorb the values, anxieties, and priorities of the culture around us. Paul invites us to a different way of living, one where our daily habits and thoughts are continually reshaped by God. This week, pay attention to the media you consume and the routines that dictate your days. Ask yourself if they are molding you into the image of the world or leaving room for God to renew your mind. True transformation happens when we intentionally offer our ordinary moments to God as an act of worship.
+It is easy to be overwhelmed by the visible signs of decay in our lives, whether it is aging, illness, or the breakdown of our plans. Paul invites us to reframe our daily struggles not as pointless pain, but as temporary conditions that point us toward something enduring. When you feel exhausted by the demands of the visible world, take a moment to pause and acknowledge the invisible work God is doing within you. Trust that your spirit is being quietly renewed, even when your circumstances remain difficult.
 
 ## Three Things to Carry With You
-1. Offer your daily habits to God as an act of worship.
-2. Resist the urge to blend in with cultural anxieties.
-3. Allow God to reshape your thoughts and priorities today.
+1. Look beyond your immediate struggles to eternal realities.
+2. Trust that God is renewing your spirit every single day.
+3. Value the invisible growth happening beneath the surface of your life.
 
 ## A Prayer
-Lord, help me to notice where I am passively conforming to the world around me. Give me the courage to offer my time, energy, and body to you as a living sacrifice. Renew my mind so that I can clearly see your good and perfect will. Guide my steps today as I seek to live a life that pleases you.
+Lord, help me to see beyond the immediate frustrations and pains of this life. When my energy fades and my body aches, remind me of the eternal glory you are preparing for me. Give me the grace to trust in your quiet, daily renewal of my spirit. Keep my eyes fixed on the beautiful, unseen realities of your kingdom.
 

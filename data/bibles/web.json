@@ -1,4 +1,27 @@
 {
+  "2 Corinthians 4:16-18": {
+    "text": "Therefore we don’t faint, but though our outward man is decaying, yet our inward man is renewed day by day. For our light affliction, which is for the moment, works for us more and more exceedingly an eternal weight of glory; while we don’t look at the things which are seen, but at the things which are not seen. For the things which are seen are temporal, but the things which are not seen are eternal.",
+    "verses": [
+      {
+        "book": "2 Corinthians",
+        "chapter": 4,
+        "text": "Therefore we don’t faint, but though our outward man is decaying, yet our inward man is renewed day by day.",
+        "verse": 16
+      },
+      {
+        "book": "2 Corinthians",
+        "chapter": 4,
+        "text": "For our light affliction, which is for the moment, works for us more and more exceedingly an eternal weight of glory;",
+        "verse": 17
+      },
+      {
+        "book": "2 Corinthians",
+        "chapter": 4,
+        "text": "while we don’t look at the things which are seen, but at the things which are not seen. For the things which are seen are temporal, but the things which are not seen are eternal.",
+        "verse": 18
+      }
+    ]
+  },
   "Romans 12:1-2": {
     "text": "Therefore I urge you, brothers, by the mercies of God, to present your bodies a living sacrifice, holy, acceptable to God, which is your spiritual service. Don’t be conformed to this world, but be transformed by the renewing of your mind, so that you may prove what is the good, well-pleasing, and perfect will of God.",
     "verses": [
