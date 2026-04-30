@@ -12,7 +12,7 @@ content:
 ai:
   provider: "gemini"
   text_model: "gemini-3.1-pro"
-  image_model: "gemini-3.1-flash-image"
+  image_model: "gemini-3-pro-image"
   use_search_grounding: false
   validate_verses: true
 
