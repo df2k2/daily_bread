@@ -73,7 +73,12 @@ A separate `healthcheck.yml` workflow runs hourly and opens a GitHub issue if no
 `content.translation` in `config.yml` accepts any of:
 
 - `WEB`, `KJV`, `ASV`, `BBE` — public domain, fetched from [bible-api.com](https://bible-api.com) and cached at `data/bibles/<translation>.json`.
-- `NLT` — **not bundled**. Requires a Tyndale license. To enable: implement a fetcher that returns `(text, verses)` from your licensed source and route it from `LICENSED` in `scripts/fetch_verse.py`.
+- `NLT` — **bundled** at `data/bibles/sources/nlt.json` (from [DrTooru/NLT-Bible-JSON](https://github.com/DrTooru/NLT-Bible-JSON)).
+- `PT-NVI`, `PT-ACF`, `PT-AA` — Brazilian Portuguese, **bundled** at `data/bibles/sources/pt-*.json` (from [thiagobodruk/biblia](https://github.com/thiagobodruk/biblia)).
+
+> ⚠️ **Licensing notice:** The NLT (Tyndale House), NVI (Biblica), and Almeida revisions are **copyrighted**. They are bundled here for convenience but their public redistribution may require a license from the rights holder. If this repo or its GitHub Pages site is public, verify your usage falls under fair use or obtain explicit permission. The bundled sources carry no included license file.
+
+Reading-plan references use English book names (e.g. `John 3:16-21`). The fetcher resolves them against the canonical 66-book order — Portuguese bundles are looked up by index, so passing `John 3:16-21` with `translation: PT-ACF` returns the Portuguese verse text.
 
 Switching translations is a config change; existing devotionals retain the translation they were generated under (recorded in frontmatter).
 
