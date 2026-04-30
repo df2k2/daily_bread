@@ -42,12 +42,44 @@ body {
   font-style: italic;
   color: var(--muted-foreground);
 }
+.prose-devotional h1 {
+  font-size: 1.875rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin-bottom: 0.25rem;
+}
 .prose-devotional h2 {
   margin-top: 2rem;
   font-weight: 600;
   font-size: 1.25rem;
 }
+.prose-devotional p > em:only-child {
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+}
+.prose-devotional hr {
+  border: 0;
+  border-top: 1px solid var(--border);
+  margin: 2rem 0;
+}
 .prose-devotional ol {
   list-style: decimal;
   padding-left: 1.5rem;
+}
+.prose-devotional pre,
+.prose-devotional code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.85rem;
+}
+.prose-devotional pre {
+  background: var(--muted);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+}
+.prose-devotional img {
+  border-radius: 0.5rem;
+  margin: 1rem 0;
+  max-width: 100%;
+  height: auto;
 }

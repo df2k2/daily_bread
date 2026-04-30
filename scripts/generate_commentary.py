@@ -8,28 +8,37 @@ from google.genai import types
 from .config import PROMPTS_DIR
 from .gemini_client import get_client, safety_settings
 
-SCHEMA = {
+_LANG_FIELDS = {
     "type": "object",
     "properties": {
         "title": {"type": "string"},
-        "context": {"type": "string"},
-        "application": {"type": "string"},
-        "takeaways": {
-            "type": "array",
-            "items": {"type": "string"},
-            "minItems": 3,
-            "maxItems": 3,
-        },
-        "prayer": {"type": "string"},
-        "image_prompt": {"type": "string"},
+        "story": {"type": "string"},
+        "lesson": {"type": "string"},
     },
-    "required": ["title", "context", "application", "takeaways", "prayer", "image_prompt"],
+    "required": ["title", "story", "lesson"],
+}
+
+SCHEMA = {
+    "type": "object",
+    "properties": {
+        "image_prompt": {"type": "string"},
+        "en": _LANG_FIELDS,
+        "pt": _LANG_FIELDS,
+    },
+    "required": ["image_prompt", "en", "pt"],
 }
 
 
-def generate_commentary(reference: str, verse_text: str, model: str) -> dict[str, Any]:
+def generate_commentary(
+    reference: str,
+    verses_by_lang: dict[str, str],
+    model: str,
+) -> dict[str, Any]:
     system_prompt = (PROMPTS_DIR / "devotional.md").read_text()
-    user_input = f"Passage: {reference}\n\nText:\n{verse_text}"
+    blocks = [f"Passage: {reference}"]
+    for lang, text in verses_by_lang.items():
+        blocks.append(f"\n[{lang.upper()} text]\n{text}")
+    user_input = "\n".join(blocks)
 
     client = get_client()
     resp = client.models.generate_content(

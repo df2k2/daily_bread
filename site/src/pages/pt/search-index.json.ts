@@ -1,7 +1,7 @@
-import { getDevotionalsFor, slugFromId } from "../lib/i18n";
+import { getDevotionalsFor, slugFromId } from "../../lib/i18n";
 
 export async function GET() {
-  const sorted = await getDevotionalsFor("en");
+  const sorted = await getDevotionalsFor("pt");
   const items = sorted.map((d) => {
     const body = d.body ?? "";
     const snippet = body

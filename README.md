@@ -68,9 +68,27 @@ A separate `healthcheck.yml` workflow runs hourly and opens a GitHub issue if no
 
 `type: "daily"` plans support a `morning`/`evening` reading list per day. The generator picks one reading per slot and advances to the next day after the evening run.
 
-## Translations
+## Languages and translations
 
-`content.translation` in `config.yml` accepts any of:
+Every devotional is generated in **both English and Brazilian Portuguese** in the same Gemini call (one image, two markdown files). `config.yml` → `content.languages` maps each language to a translation:
+
+```yaml
+content:
+  primary_language: "en"
+  languages:
+    en:
+      label: "English"
+      translation: "NLT"
+    pt:
+      label: "Português (BR)"
+      translation: "PT-NVI"
+```
+
+Each generation writes `content/<y>/<m>/<d>-<slot>.en.md` and `<d>-<slot>.pt.md`, sharing one `<d>-<slot>.png`. Section headings, dates, and labels are localized; the AI is prompted to write language-native prose, not literal translation.
+
+**On the site:** the primary language lives at `/` (and `/<slug>`); other languages are mounted under `/<lang>/` (e.g. `/pt/`, `/pt/2026/04/30-morning`). A navbar switcher (`EN | PT`) keeps you on the same entry when you toggle. Each locale has its own RSS feed and archive search index.
+
+**Supported translations** in `content.languages.<lang>.translation`:
 
 - `WEB`, `KJV`, `ASV`, `BBE` — public domain, fetched from [bible-api.com](https://bible-api.com) and cached at `data/bibles/<translation>.json`.
 - `NLT` — **bundled** at `data/bibles/sources/nlt.json` (from [DrTooru/NLT-Bible-JSON](https://github.com/DrTooru/NLT-Bible-JSON)).
@@ -78,9 +96,7 @@ A separate `healthcheck.yml` workflow runs hourly and opens a GitHub issue if no
 
 > ⚠️ **Licensing notice:** The NLT (Tyndale House), NVI (Biblica), and Almeida revisions are **copyrighted**. They are bundled here for convenience but their public redistribution may require a license from the rights holder. If this repo or its GitHub Pages site is public, verify your usage falls under fair use or obtain explicit permission. The bundled sources carry no included license file.
 
-Reading-plan references use English book names (e.g. `John 3:16-21`). The fetcher resolves them against the canonical 66-book order — Portuguese bundles are looked up by index, so passing `John 3:16-21` with `translation: PT-ACF` returns the Portuguese verse text.
-
-Switching translations is a config change; existing devotionals retain the translation they were generated under (recorded in frontmatter).
+Reading-plan references stay in English (e.g. `John 3:16-21`). The fetcher resolves them against the canonical 66-book order, so the same reference produces NLT text for `en` and NVI/ACF/AA text for `pt`.
 
 ## Verse validation
 
@@ -96,27 +112,31 @@ A failure raises before commentary generation, so a bad fetch never reaches the 
 
 ## Recipients
 
-Each recipient in `config.yml` → `notifications.recipients` is an object that opts into channels and slots:
+Each recipient in `config.yml` → `notifications.recipients` is an object that opts into channels, slots, and a language:
 
 ```yaml
 recipients:
   - name: "Alice"
     email: "alice@example.com"
-    slots: ["morning"]        # only morning notifications
+    language: "en"            # subject, body, and link to /<slug>
+    slots: ["morning"]
     channels: ["email"]
-  - name: "Bob"
-    email: "bob@example.com"
-    sms: "+15551234567"
+  - name: "Bruno"
+    email: "bruno@example.com"
+    sms: "+5511999999999"
+    language: "pt"            # subject, body, and link to /pt/<slug>
     slots: []                 # both slots
     channels: ["email", "sms"]
 ```
 
-The notifier sends per-recipient and per-channel — Alice gets a morning email only, Bob gets both slots on both channels. Empty `slots` means all slots; omitting a channel field skips that channel even if it's listed.
+The notifier picks the localized subject + body and the locale-specific URL based on each recipient's `language` (defaults to `content.primary_language`). Alice gets one morning email in English; Bruno gets both slots in Portuguese on both channels.
 
 ## RSS and search
 
-- `/rss.xml` is generated at build time from the content collection. Auto-discovery `<link>` is in the base layout so feed readers find it.
-- `/archive` ships a client-side search box backed by a static `/search-index.json` (title, reference, slot, date, snippet). Pure browser-side filtering — no extra infra.
+Each locale has its own feed and search index:
+
+- `/rss.xml` and `/pt/rss.xml` — generated at build time. The base layout sets the auto-discovery `<link>` to the current locale's feed.
+- `/archive` and `/pt/archive` — client-side search backed by `/search-index.json` and `/pt/search-index.json` respectively (title, reference, slot, date, snippet).
 
 ## Costs and caps
 
