@@ -1,16 +1,55 @@
 from __future__ import annotations
 
 import os
+from datetime import date as date_t
 from typing import Any
 
 import requests
 
+from .render import _format_date
+
 RESEND_URL = "https://api.resend.com/emails"
 TWILIO_URL = "https://api.twilio.com/2010-04-01/Accounts/{sid}/Messages.json"
 
+NOTIFICATION_COPY = {
+    "en": {
+        "subject": "Today's Bread — {date}, {slot}",
+        "html": (
+            "<p><strong>{title}</strong></p>"
+            "<p>{reference}</p>"
+            '<p><a href="{link}">Read it here</a></p>'
+        ),
+        "text": "{title}\n{reference}\n{link}",
+        "sms": "Daily Bread ({short_date} {slot_tag}): {reference} — {link}",
+        "slot_morning": "MORNING",
+        "slot_evening": "EVENING",
+    },
+    "pt": {
+        "subject": "Pão de Hoje — {date}, {slot}",
+        "html": (
+            "<p><strong>{title}</strong></p>"
+            "<p>{reference}</p>"
+            '<p><a href="{link}">Leia aqui</a></p>'
+        ),
+        "text": "{title}\n{reference}\n{link}",
+        "sms": "Pão Diário ({short_date} {slot_tag}): {reference} — {link}",
+        "slot_morning": "MANHÃ",
+        "slot_evening": "NOITE",
+    },
+}
 
-def _permalink(base_url: str, year: str, month: str, day: str, slot: str) -> str:
-    return f"{base_url.rstrip('/')}/{year}/{month}/{day}-{slot}"
+SLOT_LABELS = {
+    "en": {"morning": "morning", "evening": "evening"},
+    "pt": {"morning": "manhã", "evening": "noite"},
+}
+
+
+def _permalink(base_url: str, lang: str, primary_lang: str, today: date_t, slot: str) -> str:
+    base = base_url.rstrip("/")
+    slug = f"{today:%Y}/{today:%m}/{today:%d}-{slot}"
+    if lang == primary_lang:
+        return f"{base}/{slug}"
+    return f"{base}/{lang}/{slug}"
 
 
 def _wants(recipient: dict[str, Any], slot: str, channel: str) -> bool:
@@ -51,36 +90,46 @@ def _send_sms(from_number: str, to: str, body: str) -> None:
 def notify(
     cfg: dict[str, Any],
     site_cfg: dict[str, Any],
-    today: Any,
+    today: date_t,
     slot: str,
-    title: str,
+    titles_by_lang: dict[str, str],
     reference: str,
+    primary_language: str,
 ) -> None:
     recipients = cfg.get("recipients") or []
     if not recipients:
         return
 
-    link = _permalink(
-        site_cfg["base_url"],
-        f"{today:%Y}",
-        f"{today:%m}",
-        f"{today:%d}",
-        slot,
-    )
-    subject = f"Today's Bread — {today:%B %-d}, {slot}"
-    html = (
-        f"<p><strong>{title}</strong></p>"
-        f"<p>{reference}</p>"
-        f'<p><a href="{link}">Read it here</a></p>'
-    )
-    text = f"{title}\n{reference}\n{link}"
-    sms_body = f"Daily Bread ({today:%-m/%-d} {slot[:3].upper()}): {reference} — {link}"
-
     email_cfg = cfg.get("email") or {}
     sms_cfg = cfg.get("sms") or {}
 
     for r in recipients:
+        lang = r.get("language", primary_language)
+        if lang not in NOTIFICATION_COPY:
+            lang = primary_language
+        copy = NOTIFICATION_COPY[lang]
+
+        title = titles_by_lang.get(lang) or next(iter(titles_by_lang.values()))
+        link = _permalink(site_cfg["base_url"], lang, primary_language, today, slot)
+        slot_label = SLOT_LABELS[lang][slot]
+
+        ctx = {
+            "title": title,
+            "reference": reference,
+            "link": link,
+            "date": _format_date(today, lang),
+            "short_date": today.strftime("%-m/%-d"),
+            "slot": slot_label,
+            "slot_tag": copy[f"slot_{slot}"],
+        }
+
         if _wants(r, slot, "email"):
-            _send_email(email_cfg["from"], r["email"], subject, html, text)
+            _send_email(
+                email_cfg["from"],
+                r["email"],
+                copy["subject"].format(**ctx),
+                copy["html"].format(**ctx),
+                copy["text"].format(**ctx),
+            )
         if _wants(r, slot, "sms"):
-            _send_sms(sms_cfg["from"], r["sms"], sms_body)
+            _send_sms(sms_cfg["from"], r["sms"], copy["sms"].format(**ctx))

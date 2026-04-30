@@ -13,16 +13,23 @@ interface IndexItem {
   snippet: string;
 }
 
-export default function ArchiveSearch() {
+interface Props {
+  lang: "en" | "pt";
+  indexUrl: string;
+  placeholder: string;
+  countLabel: (results: number, total: number) => string;
+}
+
+export default function ArchiveSearch({ lang, indexUrl, placeholder, countLabel }: Props) {
   const [items, setItems] = useState<IndexItem[]>([]);
   const [query, setQuery] = useState("");
 
   useEffect(() => {
-    fetch(`${import.meta.env.BASE_URL.replace(/\/$/, "")}/search-index.json`)
+    fetch(indexUrl)
       .then((r) => r.json())
       .then(setItems)
       .catch(() => setItems([]));
-  }, []);
+  }, [indexUrl]);
 
   const results = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -32,24 +39,26 @@ export default function ArchiveSearch() {
     );
   }, [items, query]);
 
+  const linkBase = lang === "en" ? "" : `/${lang}`;
+
   return (
     <div className="flex flex-col gap-4">
       <Input
         type="search"
-        placeholder="Search title, passage, or text..."
+        placeholder={placeholder}
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         clearable
         onClear={() => setQuery("")}
       />
       <Text className="!text-xs" style={{ color: "var(--muted-foreground)" }}>
-        {results.length} of {items.length} {items.length === 1 ? "entry" : "entries"}
+        {countLabel(results.length, items.length)}
       </Text>
       <div className="flex flex-col gap-3">
         {results.map((r) => (
           <a
             key={r.slug}
-            href={`${import.meta.env.BASE_URL.replace(/\/$/, "")}/${r.slug}`}
+            href={`${import.meta.env.BASE_URL.replace(/\/$/, "")}${linkBase}/${r.slug}`}
             className="block rounded-xl border p-4 transition-colors hover:bg-(--muted)"
             style={{ borderColor: "var(--border)" }}
           >

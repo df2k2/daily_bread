@@ -4,7 +4,14 @@ schedule:
   timezone: "America/Los_Angeles"
 
 content:
-  translation: "WEB"
+  primary_language: "en"
+  languages:
+    en:
+      label: "English"
+      translation: "NLT"
+    pt:
+      label: "Português (BR)"
+      translation: "PT-NVI"
   reading_plan: "random"
   passage_length: "short"
   tone: "warm, conversational, hopeful"
@@ -29,16 +36,21 @@ notifications:
   sms:
     provider: "twilio"
     from: "+15550000000"
-  # Each recipient opts into channels and slots. Omit a channel
-  # field to skip that channel for them. Empty `slots` = both.
+  # Each recipient opts into channels, slots, and language.
+  # `language`: "en" or "pt" (defaults to content.primary_language).
+  # `slots`:    list of "morning" / "evening" (empty = both).
+  # `channels`: list of "email" / "sms" (defaults to whichever
+  #             addresses are present).
   recipients: []
     # - name: "Alice"
     #   email: "alice@example.com"
-    #   sms: "+15551234567"
+    #   language: "en"
     #   slots: ["morning"]
     #   channels: ["email"]
-    # - name: "Bob"
-    #   email: "bob@example.com"
+    # - name: "Bruno"
+    #   email: "bruno@example.com"
+    #   sms: "+5511999999999"
+    #   language: "pt"
     #   slots: []
     #   channels: ["email", "sms"]
 

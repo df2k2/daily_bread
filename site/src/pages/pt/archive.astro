@@ -1,9 +1,9 @@
 ---
-import Base from "../layouts/Base.astro";
-import ArchiveSearch from "../components/ArchiveSearch";
-import { t, url } from "../lib/i18n";
+import Base from "../../layouts/Base.astro";
+import ArchiveSearch from "../../components/ArchiveSearch";
+import { t, url } from "../../lib/i18n";
 
-const lang = "en" as const;
+const lang = "pt" as const;
 const strings = t(lang);
 const indexUrl = `${url(lang)}search-index.json`.replace(/\/{2,}/g, "/");
 ---

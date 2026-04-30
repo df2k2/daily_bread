@@ -1,23 +1,31 @@
 ---
 import "../styles/globals.css";
 import Navbar from "../components/Navbar";
+import { basePath, t, url, type Lang } from "../lib/i18n";
 
 interface Props {
+  lang?: Lang;
   title?: string;
   description?: string;
 }
 
-const { title = "Daily Bread", description = "A daily Bible devotional." } = Astro.props;
+const { lang = "en", title, description } = Astro.props;
+const strings = t(lang);
+const finalTitle = title ?? strings.site_title;
+const finalDescription = description ?? strings.site_description;
+const homeHref = url(lang);
+const archiveHref = url(lang, "/archive");
+const rssHref = url(lang, "/rss.xml");
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={lang}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content={description} />
-    <title>{title}</title>
-    <link rel="alternate" type="application/rss+xml" title="Daily Bread" href="/rss.xml" />
+    <meta name="description" content={finalDescription} />
+    <title>{finalTitle}</title>
+    <link rel="alternate" type="application/rss+xml" title={strings.feed_title} href={rssHref} />
     <script is:inline>
       (() => {
         const stored = localStorage.getItem("theme");
@@ -27,7 +35,15 @@ const { title = "Daily Bread", description = "A daily Bible devotional." } = Ast
     </script>
   </head>
   <body class="min-h-screen">
-    <Navbar client:load />
+    <Navbar
+      client:load
+      lang={lang}
+      basePath={basePath()}
+      archiveLabel={strings.archive}
+      homeHref={homeHref}
+      archiveHref={archiveHref}
+      siteTitle={strings.site_title}
+    />
     <main class="mx-auto max-w-3xl px-4 pb-16 pt-8">
       <slot />
     </main>

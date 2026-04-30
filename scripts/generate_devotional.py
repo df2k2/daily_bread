@@ -31,51 +31,74 @@ def main(argv: list[str] | None = None) -> int:
     slot = args.slot or slot_for_hour(now.hour)
     today = now.date()
 
+    languages: dict = cfg["content"]["languages"]
+    if not languages:
+        raise RuntimeError("config.yml: content.languages is empty.")
+
     reference = args.reference or select_passage(cfg["content"]["reading_plan"], slot)
     print(f"[passage] {reference}", flush=True)
 
-    fetched = fetch_verse(reference, cfg["content"]["translation"])
-    if cfg["ai"].get("validate_verses", True):
-        validate_verse(fetched, reference)
-    verse_text = fetched.text
+    fetched_by_lang = {}
+    verses_by_lang: dict[str, str] = {}
+    for lang, lang_cfg in languages.items():
+        fetched = fetch_verse(reference, lang_cfg["translation"])
+        if cfg["ai"].get("validate_verses", True):
+            validate_verse(fetched, reference)
+        fetched_by_lang[lang] = fetched
+        verses_by_lang[lang] = fetched.text
+        print(f"[verse:{lang}] {lang_cfg['translation']} {len(fetched.verses)} verse(s)", flush=True)
 
-    commentary = generate_commentary(reference, verse_text, cfg["ai"]["text_model"])
-    print(f"[title] {commentary['title']}", flush=True)
+    commentary = generate_commentary(reference, verses_by_lang, cfg["ai"]["text_model"])
+    for lang in languages:
+        print(f"[title:{lang}] {commentary[lang]['title']}", flush=True)
 
-    md_path, img_path = output_paths(today, slot)
+    primary = cfg["content"]["primary_language"]
+    _, img_path = output_paths(today, slot, primary)
     image_filename = None
     if cfg["image"]["enabled"] and not args.skip_image:
         generate_image(commentary["image_prompt"], cfg["ai"]["image_model"], img_path)
         image_filename = img_path.name
 
-    markdown = render_markdown(
-        today=today,
-        slot=slot,
-        reference=reference,
-        translation=cfg["content"]["translation"],
-        verse_text=verse_text,
-        commentary=commentary,
-        models={"text": cfg["ai"]["text_model"], "image": cfg["ai"]["image_model"]},
-        image_filename=image_filename,
-    )
+    written: dict[str, str] = {}
+    for lang, lang_cfg in languages.items():
+        markdown = render_markdown(
+            today=today,
+            slot=slot,
+            reference=reference,
+            translation=lang_cfg["translation"],
+            verse_text=fetched_by_lang[lang].text,
+            title=commentary[lang]["title"],
+            story=commentary[lang]["story"],
+            lesson=commentary[lang]["lesson"],
+            image_prompt=commentary["image_prompt"],
+            models={"text": cfg["ai"]["text_model"], "image": cfg["ai"]["image_model"]},
+            image_filename=image_filename,
+            lang=lang,
+        )
+        md_path, _ = output_paths(today, slot, lang)
+        if args.dry_run:
+            print(f"--- {md_path} ---")
+            print(markdown)
+            continue
+        md_path.parent.mkdir(parents=True, exist_ok=True)
+        md_path.write_text(markdown)
+        written[lang] = str(md_path)
+        print(f"[wrote:{lang}] {md_path}", flush=True)
 
     if args.dry_run:
-        print(markdown)
-        print(json.dumps(commentary, indent=2))
+        print(json.dumps(commentary, indent=2, ensure_ascii=False))
         return 0
 
-    md_path.parent.mkdir(parents=True, exist_ok=True)
-    md_path.write_text(markdown)
-    print(f"[wrote] {md_path}", flush=True)
-
     if not args.skip_notify:
+        titles_by_lang = {lang: commentary[lang]["title"] for lang in languages}
         notify(
             cfg["notifications"],
             cfg["site"],
             today,
             slot,
-            commentary["title"],
+            titles_by_lang,
             reference,
+            primary_language=primary,
         )
     return 0
 

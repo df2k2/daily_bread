@@ -2,11 +2,12 @@ import { defineCollection, z } from "astro:content";
 import { glob } from "astro/loaders";
 
 const devotionals = defineCollection({
-  loader: glob({ pattern: "**/*.md", base: "../content" }),
-  schema: ({ image }) =>
+  loader: glob({ pattern: "**/*.{en,pt}.md", base: "../content" }),
+  schema: () =>
     z.object({
       date: z.coerce.date(),
       slot: z.enum(["morning", "evening"]),
+      lang: z.enum(["en", "pt"]),
       reference: z.string(),
       translation: z.string(),
       title: z.string(),
