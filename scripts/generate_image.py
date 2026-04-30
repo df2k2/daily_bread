@@ -12,7 +12,8 @@ def generate_image(image_prompt: str, model: str, out_path: Path) -> None:
     template = (PROMPTS_DIR / "image.md").read_text()
     full_prompt = template.replace("{image_prompt}", image_prompt.strip())
 
-    resp = get_client().models.generate_content(
+    client = get_client()
+    resp = client.models.generate_content(
         model=model,
         contents=full_prompt,
         config=types.GenerateContentConfig(safety_settings=safety_settings()),

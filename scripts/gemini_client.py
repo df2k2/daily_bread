@@ -15,12 +15,17 @@ _SAFETY = [
     )
 ]
 
+_client: genai.Client | None = None
+
 
 def get_client() -> genai.Client:
-    key = os.environ.get("GEMINI_API_KEY")
-    if not key:
-        raise RuntimeError("GEMINI_API_KEY is not set.")
-    return genai.Client(api_key=key)
+    global _client
+    if _client is None:
+        key = os.environ.get("GEMINI_API_KEY")
+        if not key:
+            raise RuntimeError("GEMINI_API_KEY is not set.")
+        _client = genai.Client(api_key=key)
+    return _client
 
 
 def safety_settings() -> list[types.SafetySetting]:

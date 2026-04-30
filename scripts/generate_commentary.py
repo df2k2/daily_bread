@@ -31,7 +31,8 @@ def generate_commentary(reference: str, verse_text: str, model: str) -> dict[str
     system_prompt = (PROMPTS_DIR / "devotional.md").read_text()
     user_input = f"Passage: {reference}\n\nText:\n{verse_text}"
 
-    resp = get_client().models.generate_content(
+    client = get_client()
+    resp = client.models.generate_content(
         model=model,
         contents=[system_prompt, user_input],
         config=types.GenerateContentConfig(
