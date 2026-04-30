@@ -11,8 +11,8 @@ content:
 
 ai:
   provider: "gemini"
-  text_model: "gemini-3.1-pro"
-  image_model: "gemini-3-pro-image"
+  text_model: "gemini-3.1-pro-preview"
+  image_model: "gemini-3.1-pro-preview"
   use_search_grounding: false
   validate_verses: true
 
