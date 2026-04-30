@@ -12,18 +12,11 @@ SCHEMA = {
     "type": "object",
     "properties": {
         "title": {"type": "string"},
-        "context": {"type": "string"},
-        "application": {"type": "string"},
-        "takeaways": {
-            "type": "array",
-            "items": {"type": "string"},
-            "minItems": 3,
-            "maxItems": 3,
-        },
-        "prayer": {"type": "string"},
+        "story": {"type": "string"},
+        "lesson": {"type": "string"},
         "image_prompt": {"type": "string"},
     },
-    "required": ["title", "context", "application", "takeaways", "prayer", "image_prompt"],
+    "required": ["title", "story", "lesson", "image_prompt"],
 }
 
 
