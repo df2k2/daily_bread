@@ -1,6 +1,8 @@
 # daily_bread
 
-A self-hosted daily Bible devotional service. GitHub Actions runs a Python pipeline that picks a passage, drafts a short devotional with Gemini 3.1 Pro, generates artwork with a Gemini image model, and commits the result to `/content/`. An Astro 5 + React 19 + RizzUI site builds the archive and deploys to GitHub Pages. Optional email (Resend) and SMS (Twilio) notifications go out with each new entry.
+A self-hosted daily Bible devotional service. GitHub Actions runs a Python pipeline that picks a passage, drafts a short devotional with Gemini, generates artwork with a Gemini image model, and commits the result to `/content/`. An Astro 5 + React 19 + RizzUI site builds the archive and deploys to GitHub Pages. Optional email (Resend) and SMS (Twilio) notifications go out with each new entry.
+
+Set `ai.text_model` and `ai.image_model` in `config.yml` to model IDs your Gemini API key can access. Run `python -m scripts.list_models` (with `GEMINI_API_KEY` exported) to print the models available to you.
 
 See `config.yml` to tune schedule, reading plan, models, and notifications.
 
