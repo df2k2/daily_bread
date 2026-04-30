@@ -1,0 +1,44 @@
+name: Devotional health check
+
+on:
+  schedule:
+    - cron: "0 * * * *"
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Inspect last devotional commit
+        id: check
+        run: |
+          last=$(git log -1 --format=%ct -- content/ || echo 0)
+          now=$(date -u +%s)
+          age=$(( (now - last) / 60 ))
+          echo "age_minutes=$age" >> "$GITHUB_OUTPUT"
+          echo "Last content commit: $age minutes ago"
+          if [ "$age" -gt 1560 ]; then  # 26h
+            echo "stale=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Open or update stale-run issue
+        if: steps.check.outputs.stale == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          title="Daily Bread: no devotional in >26h"
+          body="No commits to /content in the last ${{ steps.check.outputs.age_minutes }} minutes. Re-run the **Generate devotional** workflow manually to recover."
+          existing=$(gh issue list --state open --search "in:title \"$title\"" --json number --jq '.[0].number' || true)
+          if [ -n "$existing" ]; then
+            gh issue comment "$existing" --body "$body"
+          else
+            gh issue create --title "$title" --body "$body" --label "ops" || \
+              gh issue create --title "$title" --body "$body"
+          fi
