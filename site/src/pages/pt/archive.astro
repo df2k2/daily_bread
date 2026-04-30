@@ -1,20 +1,65 @@
 ---
 import Base from "../../layouts/Base.astro";
-import ArchiveSearch from "../../components/ArchiveSearch";
-import { t, url } from "../../lib/i18n";
+import Sidebar from "../../components/Sidebar.astro";
+import ArchiveBrowser from "../../components/ArchiveBrowser";
+import {
+  aggregateBy,
+  getDevotionalsFor,
+  monthName,
+  t,
+  url,
+} from "../../lib/i18n";
+import { serializeEntries } from "../../lib/serialize";
 
 const lang = "pt" as const;
 const strings = t(lang);
-const indexUrl = `${url(lang)}search-index.json`.replace(/\/{2,}/g, "/");
+const all = await getDevotionalsFor(lang);
+const baseHref = url(lang, "/archive");
+const tagPathPrefix = url(lang, "/tags/");
+
+const years = aggregateBy(all, (e) => [String(e.data.date.getFullYear())]);
+const months = aggregateBy(
+  all,
+  (e) => [String(e.data.date.getMonth() + 1).padStart(2, "0")],
+  (k) => monthName(parseInt(k, 10) - 1, lang),
+);
+const books = aggregateBy(all, (e) => [
+  e.data.book ?? e.data.reference.split(/\s+\d/)[0]?.trim() ?? e.data.reference,
+]);
+const tags = aggregateBy(all, (e) => e.data.tags ?? []);
+
+const browserEntries = serializeEntries(all, lang);
+const monthNames = Array.from({ length: 12 }, (_, i) => monthName(i, lang));
 ---
 
 <Base lang={lang} title={`${strings.archive} — ${strings.site_title}`}>
   <h1 class="mb-6 text-2xl font-semibold tracking-tight">{strings.archive_heading}</h1>
-  <ArchiveSearch
-    client:load
-    lang={lang}
-    indexUrl={indexUrl}
-    placeholder={strings.search_placeholder}
-    countLabel={(n, total) => `${n} / ${total}`}
-  />
+
+  <div class="grid grid-cols-1 gap-8 md:grid-cols-[14rem_1fr]">
+    <Sidebar
+      lang={lang}
+      baseHref={baseHref}
+      filtersLabel={strings.filters}
+      yearLabel={strings.year}
+      monthLabel={strings.month}
+      bookLabel={strings.book}
+      tagsLabel={strings.tags}
+      clearLabel={strings.clear_filters}
+      years={years}
+      months={months}
+      books={books}
+      tags={tags}
+    />
+    <ArchiveBrowser
+      client:load
+      entries={browserEntries}
+      lang={lang}
+      searchPlaceholder={strings.search_placeholder}
+      countLabel={(n, total) => strings.of_entries(n, total)}
+      noResultsLabel={strings.no_results}
+      viewLabel={strings.view}
+      monthNames={monthNames}
+      tagPathPrefix={tagPathPrefix}
+    />
+  </div>
 </Base>

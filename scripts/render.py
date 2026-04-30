@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 import json
-from datetime import date
+import re
+from datetime import date, datetime
 from pathlib import Path
 from typing import Any
 
@@ -72,10 +73,33 @@ def slot_for_hour(hour: int) -> str:
     return "morning" if hour < 12 else "evening"
 
 
-def output_paths(today: date, slot: str, lang: str) -> tuple[Path, Path]:
+def reference_slug(reference: str) -> str:
+    s = reference.lower()
+    s = re.sub(r"[^a-z0-9]+", "-", s)
+    return s.strip("-")
+
+
+def book_from_reference(reference: str) -> str:
+    m = re.match(r"^((?:\d\s+)?[A-Za-z][A-Za-z\s]+?)\s+\d+", reference.strip())
+    return m.group(1).strip() if m else reference.split()[0]
+
+
+def _normalize_tag(tag: str) -> str:
+    return re.sub(r"\s+", " ", tag).strip().lower()
+
+
+def tag_slug(tag: str) -> str:
+    s = _normalize_tag(tag)
+    # Keep lowercase letters (incl. accented) and digits; everything else → hyphen.
+    s = re.sub(r"[^\w]+", "-", s, flags=re.UNICODE)
+    return s.strip("-")
+
+
+def output_paths(when: datetime, slot: str, lang: str, reference: str) -> tuple[Path, Path]:
+    today = when.date()
     folder = CONTENT_DIR / f"{today:%Y}" / f"{today:%m}"
-    base = f"{today:%d}-{slot}"
-    return folder / f"{base}.{lang}.md", folder / f"{base}.png"
+    base = f"{today:%d}-{when:%H%M}-{reference_slug(reference)}"
+    return folder / f"{base}-{lang}.md", folder / f"{base}.png"
 
 
 def _format_date(d: date, lang: str) -> str:
@@ -86,8 +110,16 @@ def _format_date(d: date, lang: str) -> str:
     return formatted
 
 
+def _excerpt(story: str, lesson: str, max_len: int = 280) -> str:
+    text = re.sub(r"\s+", " ", story).strip()
+    if len(text) >= 120:
+        return text[:max_len].rstrip() + ("…" if len(text) > max_len else "")
+    combined = (text + " " + re.sub(r"\s+", " ", lesson).strip()).strip()
+    return combined[:max_len].rstrip() + ("…" if len(combined) > max_len else "")
+
+
 def render_markdown(
-    today: date,
+    when: datetime,
     slot: str,
     reference: str,
     translation: str,
@@ -95,19 +127,28 @@ def render_markdown(
     title: str,
     story: str,
     lesson: str,
+    tags: list[str],
     image_prompt: str,
     models: dict[str, str],
     image_filename: str | None,
     lang: str,
 ) -> str:
     labels = LABELS[lang]
-    meta = {
+    today = when.date()
+    normalized_tags = sorted({_normalize_tag(t) for t in tags if t.strip()})
+    excerpt = _excerpt(story, lesson)
+
+    meta: dict[str, Any] = {
         "date": today.isoformat(),
+        "datetime": when.isoformat(),
         "slot": slot,
         "lang": lang,
         "reference": reference,
+        "book": book_from_reference(reference),
         "translation": translation,
         "title": title,
+        "tags": normalized_tags,
+        "excerpt": excerpt,
         "ai": models,
     }
     if image_filename:
@@ -118,6 +159,7 @@ def render_markdown(
         "passage": verse_text,
         "story": story,
         "lesson": lesson,
+        "tags": normalized_tags,
         "image_prompt": image_prompt,
     }
 

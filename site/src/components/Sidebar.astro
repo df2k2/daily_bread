@@ -1,0 +1,68 @@
+---
+import type { Aggregate, Lang } from "../lib/i18n";
+
+interface Props {
+  lang: Lang;
+  baseHref: string;
+  filtersLabel: string;
+  yearLabel: string;
+  monthLabel: string;
+  bookLabel: string;
+  tagsLabel: string;
+  clearLabel: string;
+  years: Aggregate[];
+  months: Aggregate[];
+  books: Aggregate[];
+  tags: Aggregate[];
+}
+
+const { baseHref, filtersLabel, yearLabel, monthLabel, bookLabel, tagsLabel,
+        clearLabel, years, months, books, tags } = Astro.props;
+
+function link(key: string, value: string): string {
+  return `${baseHref}?${key}=${encodeURIComponent(value)}`;
+}
+
+const groups: { label: string; key: string; items: Aggregate[] }[] = [
+  { label: yearLabel,  key: "year",  items: years },
+  { label: monthLabel, key: "month", items: months },
+  { label: bookLabel,  key: "book",  items: books },
+  { label: tagsLabel,  key: "tag",   items: tags },
+];
+---
+
+<aside class="space-y-6 text-sm">
+  <div class="flex items-center justify-between">
+    <h2 class="text-xs font-semibold uppercase tracking-wider" style="color: var(--muted-foreground)">
+      {filtersLabel}
+    </h2>
+    <a
+      href={baseHref}
+      class="text-xs hover:underline"
+      style="color: var(--muted-foreground)"
+    >
+      {clearLabel}
+    </a>
+  </div>
+
+  {groups.filter((g) => g.items.length > 0).map((group) => (
+    <div>
+      <h3 class="mb-2 text-xs font-semibold uppercase tracking-wider" style="color: var(--muted-foreground)">
+        {group.label}
+      </h3>
+      <ul class="space-y-1">
+        {group.items.slice(0, 20).map((item) => (
+          <li>
+            <a
+              href={link(group.key, item.value)}
+              class="flex items-center justify-between gap-2 rounded px-2 py-1 hover:bg-(--muted)"
+            >
+              <span class="truncate">{item.label}</span>
+              <span class="text-xs" style="color: var(--muted-foreground)">{item.count}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  ))}
+</aside>

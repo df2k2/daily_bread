@@ -29,7 +29,6 @@ def main(argv: list[str] | None = None) -> int:
     tz = ZoneInfo(cfg["schedule"]["timezone"])
     now = datetime.now(tz)
     slot = args.slot or slot_for_hour(now.hour)
-    today = now.date()
 
     languages: dict = cfg["content"]["languages"]
     if not languages:
@@ -50,10 +49,11 @@ def main(argv: list[str] | None = None) -> int:
 
     commentary = generate_commentary(reference, verses_by_lang, cfg["ai"]["text_model"])
     for lang in languages:
-        print(f"[title:{lang}] {commentary[lang]['title']}", flush=True)
+        tags = commentary[lang].get("tags") or []
+        print(f"[title:{lang}] {commentary[lang]['title']} (tags: {', '.join(tags)})", flush=True)
 
     primary = cfg["content"]["primary_language"]
-    _, img_path = output_paths(today, slot, primary)
+    _, img_path = output_paths(now, slot, primary, reference)
     image_filename = None
     if cfg["image"]["enabled"] and not args.skip_image:
         generate_image(commentary["image_prompt"], cfg["ai"]["image_model"], img_path)
@@ -62,7 +62,7 @@ def main(argv: list[str] | None = None) -> int:
     written: dict[str, str] = {}
     for lang, lang_cfg in languages.items():
         markdown = render_markdown(
-            today=today,
+            when=now,
             slot=slot,
             reference=reference,
             translation=lang_cfg["translation"],
@@ -70,12 +70,13 @@ def main(argv: list[str] | None = None) -> int:
             title=commentary[lang]["title"],
             story=commentary[lang]["story"],
             lesson=commentary[lang]["lesson"],
+            tags=commentary[lang].get("tags") or [],
             image_prompt=commentary["image_prompt"],
             models={"text": cfg["ai"]["text_model"], "image": cfg["ai"]["image_model"]},
             image_filename=image_filename,
             lang=lang,
         )
-        md_path, _ = output_paths(today, slot, lang)
+        md_path, _ = output_paths(now, slot, lang, reference)
         if args.dry_run:
             print(f"--- {md_path} ---")
             print(markdown)
@@ -94,7 +95,7 @@ def main(argv: list[str] | None = None) -> int:
         notify(
             cfg["notifications"],
             cfg["site"],
-            today,
+            now.date(),
             slot,
             titles_by_lang,
             reference,
