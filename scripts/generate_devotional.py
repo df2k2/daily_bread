@@ -31,12 +31,13 @@ def main(argv: list[str] | None = None) -> int:
     slot = args.slot or slot_for_hour(now.hour)
     today = now.date()
 
-    reference = args.reference or select_passage(cfg["content"]["reading_plan"])
+    reference = args.reference or select_passage(cfg["content"]["reading_plan"], slot)
     print(f"[passage] {reference}", flush=True)
 
-    verse_text = fetch_verse(reference, cfg["content"]["translation"])
+    fetched = fetch_verse(reference, cfg["content"]["translation"])
     if cfg["ai"].get("validate_verses", True):
-        validate_verse(verse_text, reference)
+        validate_verse(fetched, reference)
+    verse_text = fetched.text
 
     commentary = generate_commentary(reference, verse_text, cfg["ai"]["text_model"])
     print(f"[title] {commentary['title']}", flush=True)

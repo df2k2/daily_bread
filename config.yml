@@ -12,7 +12,7 @@ content:
 ai:
   provider: "gemini"
   text_model: "gemini-3.1-pro"
-  image_model: "gemini-3.1-flash-image"
+  image_model: "gemini-3-pro-image"
   use_search_grounding: false
   validate_verses: true
 
@@ -24,15 +24,23 @@ image:
 
 notifications:
   email:
-    enabled: false
     provider: "resend"
     from: "Daily Bread <devotional@example.com>"
-    recipients: []
   sms:
-    enabled: false
     provider: "twilio"
     from: "+15550000000"
-    recipients: []
+  # Each recipient opts into channels and slots. Omit a channel
+  # field to skip that channel for them. Empty `slots` = both.
+  recipients: []
+    # - name: "Alice"
+    #   email: "alice@example.com"
+    #   sms: "+15551234567"
+    #   slots: ["morning"]
+    #   channels: ["email"]
+    # - name: "Bob"
+    #   email: "bob@example.com"
+    #   slots: []
+    #   channels: ["email", "sms"]
 
 site:
   title: "Daily Bread"

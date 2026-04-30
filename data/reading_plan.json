@@ -1,24 +1,64 @@
 {
-  "random": [
-    "John 3:16-21",
-    "Psalm 23",
-    "Matthew 5:1-12",
-    "Romans 8:31-39",
-    "Philippians 4:4-9",
-    "1 Corinthians 13",
-    "Isaiah 40:28-31",
-    "Lamentations 3:22-26",
-    "Psalm 46",
-    "Matthew 11:28-30",
-    "John 15:1-11",
-    "Ephesians 2:1-10",
-    "James 1:2-8",
-    "Hebrews 12:1-3",
-    "Psalm 121",
-    "Proverbs 3:5-8",
-    "Romans 12:1-2",
-    "2 Corinthians 4:16-18",
-    "Colossians 3:12-17",
-    "1 Peter 5:6-11"
-  ]
+  "random": {
+    "type": "random",
+    "passages": [
+      "John 3:16-21",
+      "Psalm 23",
+      "Matthew 5:1-12",
+      "Romans 8:31-39",
+      "Philippians 4:4-9",
+      "1 Corinthians 13",
+      "Isaiah 40:28-31",
+      "Lamentations 3:22-26",
+      "Psalm 46",
+      "Matthew 11:28-30",
+      "John 15:1-11",
+      "Ephesians 2:1-10",
+      "James 1:2-8",
+      "Hebrews 12:1-3",
+      "Psalm 121",
+      "Proverbs 3:5-8",
+      "Romans 12:1-2",
+      "2 Corinthians 4:16-18",
+      "Colossians 3:12-17",
+      "1 Peter 5:6-11",
+      "Psalm 1",
+      "Psalm 91",
+      "Psalm 139",
+      "Matthew 6:25-34",
+      "Luke 15:11-32",
+      "John 14:1-7",
+      "Romans 5:1-11",
+      "Galatians 5:22-26",
+      "Ephesians 3:14-21",
+      "1 John 4:7-16"
+    ]
+  },
+  "sequential_psalms": {
+    "type": "sequential",
+    "passages": [
+      "Psalm 1", "Psalm 8", "Psalm 19", "Psalm 23", "Psalm 27",
+      "Psalm 32", "Psalm 34", "Psalm 37:1-11", "Psalm 42", "Psalm 46",
+      "Psalm 51", "Psalm 62", "Psalm 63", "Psalm 84", "Psalm 90",
+      "Psalm 91", "Psalm 95", "Psalm 100", "Psalm 103", "Psalm 116",
+      "Psalm 121", "Psalm 130", "Psalm 131", "Psalm 138", "Psalm 139",
+      "Psalm 143", "Psalm 145", "Psalm 146", "Psalm 147", "Psalm 150"
+    ]
+  },
+  "mcheyne": {
+    "type": "daily",
+    "_note": "Canonical M'Cheyne plan has 365 days × 4 readings. Only the first 10 days are pre-seeded here; expand from a trusted source (e.g. Edinburgh Bible Society) before relying on this plan for a full year. Format: each day has 'morning' (2 readings) and 'evening' (2 readings).",
+    "days": [
+      {"day": 1,  "morning": ["Genesis 1",  "Matthew 1"],  "evening": ["Ezra 1",  "Acts 1"]},
+      {"day": 2,  "morning": ["Genesis 2",  "Matthew 2"],  "evening": ["Ezra 2",  "Acts 2"]},
+      {"day": 3,  "morning": ["Genesis 3",  "Matthew 3"],  "evening": ["Ezra 3",  "Acts 3"]},
+      {"day": 4,  "morning": ["Genesis 4",  "Matthew 4"],  "evening": ["Ezra 4",  "Acts 4"]},
+      {"day": 5,  "morning": ["Genesis 5",  "Matthew 5"],  "evening": ["Ezra 5",  "Acts 5"]},
+      {"day": 6,  "morning": ["Genesis 6",  "Matthew 6"],  "evening": ["Ezra 6",  "Acts 6"]},
+      {"day": 7,  "morning": ["Genesis 7",  "Matthew 7"],  "evening": ["Ezra 7",  "Acts 7"]},
+      {"day": 8,  "morning": ["Genesis 8",  "Matthew 8"],  "evening": ["Ezra 8",  "Acts 8"]},
+      {"day": 9,  "morning": ["Genesis 9",  "Matthew 9"],  "evening": ["Ezra 9",  "Acts 9"]},
+      {"day": 10, "morning": ["Genesis 10", "Matthew 10"], "evening": ["Ezra 10", "Acts 10"]}
+    ]
+  }
 }

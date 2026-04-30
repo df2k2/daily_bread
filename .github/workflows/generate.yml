@@ -18,8 +18,10 @@ on:
         description: "Skip email/SMS notifications"
         type: boolean
         default: false
-  # schedule:
-  #   - cron: "0 13 * * *"   # 06:00 PT (UTC-7)
+  schedule:
+    # Times are UTC. Add ~10 min margin for GH Actions cron drift.
+    - cron: "10 13 * * *"   # ~06:00 America/Los_Angeles (PDT, UTC-7)
+    - cron: "10 1 * * *"    # ~18:00 America/Los_Angeles (PDT, UTC-7)
 
 jobs:
   generate:
@@ -54,7 +56,7 @@ jobs:
         run: |
           git config user.name "devotional-bot"
           git config user.email "bot@users.noreply.github.com"
-          git add content/ data/state.json data/bibles/web.json
+          git add content/ data/state.json data/bibles/
           if git diff --cached --quiet; then
             echo "No changes."
             exit 0
