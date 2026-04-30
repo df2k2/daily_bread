@@ -1,0 +1,48 @@
+---
+import { getCollection, render } from "astro:content";
+import Base from "../layouts/Base.astro";
+
+const all = await getCollection("devotionals");
+const latest = all.sort((a, b) => b.data.date.getTime() - a.data.date.getTime())[0];
+
+if (!latest) {
+  // No devotionals yet — show a placeholder.
+}
+
+const rendered = latest ? await render(latest) : null;
+const Content = rendered?.Content;
+
+const formattedDate = latest
+  ? latest.data.date.toLocaleDateString("en-US", {
+      weekday: "long",
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+    })
+  : null;
+---
+
+<Base title={latest ? `${latest.data.title} — Daily Bread` : "Daily Bread"}>
+  {!latest && (
+    <div class="rounded-xl border p-8 text-center" style="border-color: var(--border)">
+      <p class="text-lg font-medium">No devotionals yet.</p>
+      <p class="mt-2 text-sm" style="color: var(--muted-foreground)">
+        Run <code>python -m scripts.generate_devotional</code> to create the first one.
+      </p>
+    </div>
+  )}
+  {latest && Content && (
+    <article class="prose-devotional">
+      <header class="mb-6">
+        <p class="text-xs uppercase tracking-wide" style="color: var(--muted-foreground)">
+          {formattedDate} · {latest.data.slot}
+        </p>
+        <h1 class="mt-2 text-3xl font-semibold tracking-tight">{latest.data.title}</h1>
+        <p class="mt-1 text-sm" style="color: var(--muted-foreground)">
+          {latest.data.reference} ({latest.data.translation})
+        </p>
+      </header>
+      <Content />
+    </article>
+  )}
+</Base>
