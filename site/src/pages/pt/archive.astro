@@ -55,7 +55,7 @@ const monthNames = Array.from({ length: 12 }, (_, i) => monthName(i, lang));
       entries={browserEntries}
       lang={lang}
       searchPlaceholder={strings.search_placeholder}
-      countLabel={(n, total) => strings.of_entries(n, total)}
+      countLabels={{ of: strings.count_of, entry: strings.count_entry, entries: strings.count_entries }}
       noResultsLabel={strings.no_results}
       viewLabel={strings.view}
       monthNames={monthNames}

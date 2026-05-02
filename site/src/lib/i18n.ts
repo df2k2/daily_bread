@@ -30,8 +30,9 @@ const STRINGS = {
     book: "Book",
     tags: "Tags",
     clear_filters: "Clear filters",
-    of_entries: (n: number, total: number) =>
-      `${n} of ${total} ${total === 1 ? "entry" : "entries"}`,
+    count_of: "of",
+    count_entry: "entry",
+    count_entries: "entries",
     showing: (n: number) => `Showing ${n}`,
     tagged_with: (tag: string) => `Tagged: ${tag}`,
     no_results: "No matching entries.",
@@ -55,8 +56,9 @@ const STRINGS = {
     book: "Livro",
     tags: "Tópicos",
     clear_filters: "Limpar filtros",
-    of_entries: (n: number, total: number) =>
-      `${n} de ${total} ${total === 1 ? "entrada" : "entradas"}`,
+    count_of: "de",
+    count_entry: "entrada",
+    count_entries: "entradas",
     showing: (n: number) => `Mostrando ${n}`,
     tagged_with: (tag: string) => `Tópico: ${tag}`,
     no_results: "Nenhuma entrada encontrada.",

@@ -23,7 +23,11 @@ interface Props {
   entries: BrowserEntry[];
   lang: "en" | "pt";
   searchPlaceholder: string;
-  countLabel: (n: number, total: number) => string;
+  countLabels: {
+    of: string;
+    entry: string;
+    entries: string;
+  };
   noResultsLabel: string;
   viewLabel: string;
   monthNames: string[];
@@ -67,7 +71,7 @@ export default function ArchiveBrowser({
   entries,
   lang,
   searchPlaceholder,
-  countLabel,
+  countLabels,
   noResultsLabel,
   viewLabel,
   monthNames,
@@ -139,7 +143,7 @@ export default function ArchiveBrowser({
       )}
 
       <Text className="!text-xs" style={{ color: "var(--muted-foreground)" }}>
-        {countLabel(results.length, entries.length)}
+        {results.length} {countLabels.of} {entries.length} {entries.length === 1 ? countLabels.entry : countLabels.entries}
       </Text>
 
       {results.length === 0 ? (
