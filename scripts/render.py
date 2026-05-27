@@ -1,11 +1,11 @@
 from __future__ import annotations
 
-import json
 import re
 from datetime import date, datetime
 from pathlib import Path
 from typing import Any
 
+import frontmatter
 import yaml
 
 from .config import CONTENT_DIR
@@ -36,11 +36,6 @@ LABELS: dict[str, dict[str, str]] = {
         "reading": "The Reading",
         "story": "The Story",
         "application": "Application for Today",
-        "behind": "Behind the Scenes: The AI Data",
-        "behind_intro": (
-            "For curiosity: the JSON the generator received from the text "
-            "model and the prompt used for the image."
-        ),
         "date_format": "%B %-d, %Y",
     },
     "pt": {
@@ -48,11 +43,6 @@ LABELS: dict[str, dict[str, str]] = {
         "reading": "A Leitura",
         "story": "A História",
         "application": "Aplicação para Hoje",
-        "behind": "Nos Bastidores: Os Dados da IA",
-        "behind_intro": (
-            "Por curiosidade: o JSON que o gerador recebeu do modelo de "
-            "texto e o prompt usado para a imagem."
-        ),
         "date_format": "%-d de %B de %Y",
     },
 }
@@ -102,6 +92,58 @@ def output_paths(when: datetime, slot: str, lang: str, reference: str) -> tuple[
     return folder / f"{base}-{lang}.md", folder / f"{base}.png"
 
 
+def scripture_blockquote(verses: list[dict], fallback_text: str = "") -> str:
+    """A single markdown blockquote of the passage with each verse number
+    rendered as a lighter superscript (`<sup class="verse-num">`). Falls back
+    to plain text if structured verses aren't available."""
+    parts: list[str] = []
+    for v in verses or []:
+        text = (v.get("text") or "").strip()
+        if not text:
+            continue
+        num = v.get("verse")
+        if num is not None:
+            parts.append(f'<sup class="verse-num">{num}</sup> {text}')
+        else:
+            parts.append(text)
+    if not parts:
+        return f"> {fallback_text}".rstrip()
+    return "> " + " ".join(parts)
+
+
+def previous_today(when: datetime, lang: str) -> dict | None:
+    """The most recent devotional already written today in `lang`, if any.
+
+    Used so a day's later devotional can harmonize with the earlier one. Reads
+    only frontmatter (title/reference/tags/excerpt); returns None on the first
+    run of the day. Never raises on a malformed file — a bad read just means no
+    prior context.
+    """
+    folder = CONTENT_DIR / f"{when:%Y}" / f"{when:%m}"
+    if not folder.exists():
+        return None
+    today_iso = when.date().isoformat()
+    candidates: list[tuple[str, frontmatter.Post]] = []
+    for path in folder.glob(f"*-{lang}.md"):
+        try:
+            post = frontmatter.load(str(path))
+        except Exception:
+            continue
+        if str(post.get("date")) != today_iso:
+            continue
+        candidates.append((str(post.get("datetime") or path.name), post))
+    if not candidates:
+        return None
+    candidates.sort(key=lambda c: c[0])
+    post = candidates[-1][1]
+    return {
+        "reference": post.get("reference"),
+        "title": post.get("title"),
+        "tags": post.get("tags") or [],
+        "excerpt": post.get("excerpt") or "",
+    }
+
+
 def _format_date(d: date, lang: str) -> str:
     formatted = d.strftime(LABELS[lang]["date_format"])
     if lang == "pt":
@@ -124,6 +166,7 @@ def render_markdown(
     reference: str,
     translation: str,
     verse_text: str,
+    verses: list[dict],
     title: str,
     story: str,
     lesson: str,
@@ -154,15 +197,6 @@ def render_markdown(
     if image_filename:
         meta["image"] = image_filename
 
-    ai_data = {
-        "reference": reference,
-        "passage": verse_text,
-        "story": story,
-        "lesson": lesson,
-        "tags": normalized_tags,
-        "image_prompt": image_prompt,
-    }
-
     body: list[str] = []
     body.append(f"# {labels['heading']}: {reference}")
     body.append("")
@@ -178,7 +212,7 @@ def render_markdown(
     body.append("")
     body.append(f"**{reference}**")
     body.append("")
-    body.append(f"> {verse_text}")
+    body.append(scripture_blockquote(verses, verse_text))
     body.append("")
 
     body.append(f"## {labels['story']}")
@@ -197,14 +231,5 @@ def render_markdown(
         body.append("")
         body.append(f"*{attribution}*")
         body.append("")
-
-    body.append(f"## {labels['behind']}")
-    body.append("")
-    body.append(labels["behind_intro"])
-    body.append("")
-    body.append("```json")
-    body.append(json.dumps(ai_data, indent=2, ensure_ascii=False))
-    body.append("```")
-    body.append("")
 
     return _frontmatter(meta) + "\n" + "\n".join(body)

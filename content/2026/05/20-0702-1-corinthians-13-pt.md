@@ -35,7 +35,7 @@ image: 20-0702-1-corinthians-13.png
 
 **1 Corinthians 13**
 
-> Ainda que eu fale as línguas dos homens e dos anjos, se não tiver amor, serei como o sino que ressoa ou como o prato que retine. Ainda que eu tenha o dom de profecia e saiba todos os mistérios e todo o conhecimento, e tenha uma fé capaz de mover montanhas, mas não tiver amor, nada serei. Ainda que eu dê aos pobres tudo o que possuo e entregue o meu corpo para ser queimado, mas não tiver amor, nada disso me valerá. O amor é paciente, o amor é bondoso. Não inveja, não se vangloria, não se orgulha. Não maltrata, não procura seus interesses, não se ira facilmente, não guarda rancor. O amor não se alegra com a injustiça, mas se alegra com a verdade. Tudo sofre, tudo crê, tudo espera, tudo suporta. O amor nunca perece; mas as profecias desaparecerão, as línguas cessarão, o conhecimento passará. Pois em parte conhecemos e em parte profetizamos; quando, porém, vier o que é perfeito, o que é imperfeito desaparecerá. Quando eu era menino, falava como menino, pensava como menino e raciocinava como menino. Quando me tornei homem, deixei para trás as coisas de menino. Agora, pois, vemos apenas um reflexo obscuro, como em espelho; mas, então, veremos face a face. Agora conheço em parte; então, conhecerei plenamente, da mesma forma como sou plenamente conhecido. Assim, permanecem agora estes três: a fé, a esperança e o amor. O maior deles, porém, é o amor.
+> <sup class="verse-num">1</sup> Ainda que eu fale as línguas dos homens e dos anjos, se não tiver amor, serei como o sino que ressoa ou como o prato que retine. <sup class="verse-num">2</sup> Ainda que eu tenha o dom de profecia e saiba todos os mistérios e todo o conhecimento, e tenha uma fé capaz de mover montanhas, mas não tiver amor, nada serei. <sup class="verse-num">3</sup> Ainda que eu dê aos pobres tudo o que possuo e entregue o meu corpo para ser queimado, mas não tiver amor, nada disso me valerá. <sup class="verse-num">4</sup> O amor é paciente, o amor é bondoso. Não inveja, não se vangloria, não se orgulha. <sup class="verse-num">5</sup> Não maltrata, não procura seus interesses, não se ira facilmente, não guarda rancor. <sup class="verse-num">6</sup> O amor não se alegra com a injustiça, mas se alegra com a verdade. <sup class="verse-num">7</sup> Tudo sofre, tudo crê, tudo espera, tudo suporta. <sup class="verse-num">8</sup> O amor nunca perece; mas as profecias desaparecerão, as línguas cessarão, o conhecimento passará. <sup class="verse-num">9</sup> Pois em parte conhecemos e em parte profetizamos; <sup class="verse-num">10</sup> quando, porém, vier o que é perfeito, o que é imperfeito desaparecerá. <sup class="verse-num">11</sup> Quando eu era menino, falava como menino, pensava como menino e raciocinava como menino. Quando me tornei homem, deixei para trás as coisas de menino. <sup class="verse-num">12</sup> Agora, pois, vemos apenas um reflexo obscuro, como em espelho; mas, então, veremos face a face. Agora conheço em parte; então, conhecerei plenamente, da mesma forma como sou plenamente conhecido. <sup class="verse-num">13</sup> Assim, permanecem agora estes três: a fé, a esperança e o amor. O maior deles, porém, é o amor.
 
 ## A História
 
@@ -48,24 +48,3 @@ Paulo escrevia para uma comunidade obcecada por status e conquistas espirituais.
 ---
 
 *Citações bíblicas extraídas da Nova Versão Internacional (NVI), © 1993, 2000 por Biblica, Inc. Usado com permissão.*
-
-## Nos Bastidores: Os Dados da IA
-
-Por curiosidade: o JSON que o gerador recebeu do modelo de texto e o prompt usado para a imagem.
-
-```json
-{
-  "reference": "1 Corinthians 13",
-  "passage": "Ainda que eu fale as línguas dos homens e dos anjos, se não tiver amor, serei como o sino que ressoa ou como o prato que retine. Ainda que eu tenha o dom de profecia e saiba todos os mistérios e todo o conhecimento, e tenha uma fé capaz de mover montanhas, mas não tiver amor, nada serei. Ainda que eu dê aos pobres tudo o que possuo e entregue o meu corpo para ser queimado, mas não tiver amor, nada disso me valerá. O amor é paciente, o amor é bondoso. Não inveja, não se vangloria, não se orgulha. Não maltrata, não procura seus interesses, não se ira facilmente, não guarda rancor. O amor não se alegra com a injustiça, mas se alegra com a verdade. Tudo sofre, tudo crê, tudo espera, tudo suporta. O amor nunca perece; mas as profecias desaparecerão, as línguas cessarão, o conhecimento passará. Pois em parte conhecemos e em parte profetizamos; quando, porém, vier o que é perfeito, o que é imperfeito desaparecerá. Quando eu era menino, falava como menino, pensava como menino e raciocinava como menino. Quando me tornei homem, deixei para trás as coisas de menino. Agora, pois, vemos apenas um reflexo obscuro, como em espelho; mas, então, veremos face a face. Agora conheço em parte; então, conhecerei plenamente, da mesma forma como sou plenamente conhecido. Assim, permanecem agora estes três: a fé, a esperança e o amor. O maior deles, porém, é o amor.",
-  "story": "Paulo escrevia para uma comunidade obcecada por status e conquistas espirituais. A igreja em Corinto valorizava demonstrações grandiosas de fé, conhecimento profundo e atos dramáticos de sacrifício. Os membros viviam se comparando, tentando provar quem era o mais espiritual. Paulo interrompe essa disputa para oferecer uma métrica completamente diferente para uma vida que vale a pena. Ele desconstrói a ideia de que habilidades impressionantes ou mesmo uma generosidade extrema tenham qualquer valor se a motivação central for vazia. Para o apóstolo, o alicerce da comunidade precisava ser algo muito mais duradouro do que o talento individual ou os picos de emoção passageiros.",
-  "lesson": "É extremamente fácil nos perdermos fazendo as coisas certas pelos motivos errados. Podemos construir currículos impressionantes, ser voluntários e acumular conhecimento, e ainda assim deixar escapar o que realmente importa. Este texto nos convida a examinar o motor silencioso que impulsiona nossas ações. O amor verdadeiro não é um sentimento passageiro, mas uma maneira constante, paciente e humilde de caminhar pelo mundo. Ele exige que abramos mão da necessidade de ter razão, de chamar atenção ou de estar no controle. Quando tudo o mais desaparecer, a única coisa que restará é a forma como escolhemos amar as pessoas ao nosso redor.",
-  "tags": [
-    "amor",
-    "comunidade",
-    "humildade",
-    "perseverança",
-    "propósito"
-  ],
-  "image_prompt": "A warm glowing lantern resting on a weathered stone table at twilight, casting a steady and gentle light into the surrounding darkness."
-}
-```

@@ -1,6 +1,11 @@
 schedule:
-  frequency: 1
-  times: ["06:00"]
+  # NOTE: actual run times live in the cron lines of
+  # .github/workflows/generate.yml (currently twice daily: ~06:00 and
+  # ~18:00). Only `timezone` below is read by the pipeline — it decides the
+  # morning/evening slot and localizes dates. `frequency`/`times` are
+  # reference-only; edit the workflow to change when generation runs.
+  frequency: 2
+  times: ["06:00", "18:00"]
   timezone: "America/Los_Angeles"
 
 content:
@@ -56,4 +61,4 @@ notifications:
 
 site:
   title: "Daily Bread"
-  base_url: "https://username.github.io/daily_bread"
+  base_url: "https://df2k2.github.io/daily_bread"

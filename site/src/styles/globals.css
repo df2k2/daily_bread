@@ -12,6 +12,7 @@
   --primary-foreground: oklch(98% 0 0);
   --border: oklch(92.27% 0 0);
   --ring: oklch(54.65% 0.215 262.88);
+  --verse-num: oklch(75% 0 0);
 }
 
 [data-theme="dark"] {
@@ -23,6 +24,7 @@
   --primary-foreground: oklch(15% 0 0);
   --border: oklch(27% 0 0);
   --ring: oklch(72% 0.155 262.88);
+  --verse-num: oklch(52% 0 0);
 }
 
 html,
@@ -41,6 +43,14 @@ body {
   padding-left: 1rem;
   font-style: italic;
   color: var(--muted-foreground);
+}
+.prose-devotional .verse-num {
+  color: var(--verse-num);
+  font-style: normal;
+  font-weight: 600;
+  font-size: 0.7em;
+  padding-right: 0.15em;
+  user-select: none;
 }
 .prose-devotional h1 {
   font-size: 1.875rem;

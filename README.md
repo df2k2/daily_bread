@@ -54,9 +54,13 @@ The site reads markdown from `../content/` via Astro 5's `glob` content loader.
 
 ## Schedule
 
-Generate runs twice a day on cron (~06:00 and ~18:00 America/Los_Angeles, with ~10 min margin for GH Actions cron drift). Adjust the cron lines in `.github/workflows/generate.yml` if you change `schedule.timezone` in `config.yml`.
+Generate runs twice a day on cron (~06:00 and ~18:00 America/Los_Angeles, with ~10 min margin for GH Actions cron drift). The run times are defined by the cron lines in `.github/workflows/generate.yml` — change them there to reschedule. `config.yml` → `schedule.frequency`/`times` are reference-only (not read by the pipeline); only `schedule.timezone` is consumed, to pick the morning/evening slot and localize dates.
 
 A separate `healthcheck.yml` workflow runs hourly and opens a GitHub issue if no new content has been committed in the last 26 hours, so a silently-failing cron won't go unnoticed.
+
+### Companion devotionals
+
+Each passage is still chosen independently (the reading plan stays in charge), but any devotional generated **later the same day** is written to harmonize with the earlier one's theme — a gentle continuation of the day's arc. Before drafting, the generator reads the most recent same-day post in the primary language (`scripts/render.py` → `previous_today`) and passes its title/passage/theme to the model as an `[Earlier today]` note. Each entry must still stand entirely on its own: the model is told to assume the reader hasn't seen the earlier one and never to refer back to it. The first run of any day has no prior context and is generated normally.
 
 ## Reading plans
 
@@ -109,6 +113,8 @@ When `ai.validate_verses: true` (default), the fetched passage is checked for:
 - Plain-text sanity (length, no model-refusal phrases)
 
 A failure raises before commentary generation, so a bad fetch never reaches the site.
+
+The quoted passage is rendered from this structured per-verse data, with each verse number shown as a lighter superscript (`<sup class="verse-num">`, styled in `site/src/styles/globals.css`). The post page renders that inline HTML through Astro's markdown; no per-verse data is exposed elsewhere.
 
 ## Recipients
 

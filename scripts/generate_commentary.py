@@ -39,11 +39,21 @@ def generate_commentary(
     reference: str,
     verses_by_lang: dict[str, str],
     model: str,
+    prior: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     system_prompt = (PROMPTS_DIR / "devotional.md").read_text()
     blocks = [f"Passage: {reference}"]
     for lang, text in verses_by_lang.items():
         blocks.append(f"\n[{lang.upper()} text]\n{text}")
+    if prior and prior.get("title"):
+        prior_tags = ", ".join(prior.get("tags") or [])
+        blocks.append(
+            "\n[Earlier today]\n"
+            f"Title: {prior['title']}\n"
+            f"Passage: {prior.get('reference', '')}\n"
+            f"Themes: {prior_tags}\n"
+            f"Summary: {prior.get('excerpt', '')}"
+        )
     user_input = "\n".join(blocks)
 
     client = get_client()

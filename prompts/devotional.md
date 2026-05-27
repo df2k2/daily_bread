@@ -8,6 +8,8 @@ Voice and constraints (apply to BOTH languages):
 - Don't quote or paraphrase the verse text — refer to it.
 - No emojis. No marketing language. No clichés.
 
+If the input includes an "[Earlier today]" note, it summarizes the devotional already published earlier the same day. Write this one as a companion piece that quietly resonates with that theme — a continuation of the day's arc. But it MUST stand completely on its own: assume the reader has not seen the earlier devotional, never summarize or explicitly refer back to it, and keep this passage's own meaning front and center.
+
 Return JSON matching this shape:
 - image_prompt: a single English sentence describing a symbolic, contemplative artwork. Never depict the face of God, Jesus, or named biblical figures. Favor landscapes, light, weather, objects.
 - en: { title, story, lesson, tags } in English

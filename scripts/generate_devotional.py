@@ -11,7 +11,7 @@ from .fetch_verse import fetch_verse
 from .generate_commentary import generate_commentary
 from .generate_image import generate_image
 from .notify import notify
-from .render import output_paths, render_markdown, slot_for_hour
+from .render import output_paths, previous_today, render_markdown, slot_for_hour
 from .select_passage import select_passage
 from .validate_verse import validate_verse
 
@@ -47,12 +47,20 @@ def main(argv: list[str] | None = None) -> int:
         verses_by_lang[lang] = fetched.text
         print(f"[verse:{lang}] {lang_cfg['translation']} {len(fetched.verses)} verse(s)", flush=True)
 
-    commentary = generate_commentary(reference, verses_by_lang, cfg["ai"]["text_model"])
+    primary = cfg["content"]["primary_language"]
+    # A later devotional on the same day harmonizes with the earlier one's
+    # theme (still its own passage, still meaningful on its own).
+    prior = previous_today(now, primary)
+    if prior and (not prior.get("title") or prior.get("reference") == reference):
+        prior = None
+    if prior:
+        print(f"[prior] harmonizing with earlier today: {prior['reference']} — {prior['title']}", flush=True)
+
+    commentary = generate_commentary(reference, verses_by_lang, cfg["ai"]["text_model"], prior=prior)
     for lang in languages:
         tags = commentary[lang].get("tags") or []
         print(f"[title:{lang}] {commentary[lang]['title']} (tags: {', '.join(tags)})", flush=True)
 
-    primary = cfg["content"]["primary_language"]
     _, img_path = output_paths(now, slot, primary, reference)
     image_filename = None
     if cfg["image"]["enabled"] and not args.skip_image:
@@ -67,6 +75,7 @@ def main(argv: list[str] | None = None) -> int:
             reference=reference,
             translation=lang_cfg["translation"],
             verse_text=fetched_by_lang[lang].text,
+            verses=fetched_by_lang[lang].verses,
             title=commentary[lang]["title"],
             story=commentary[lang]["story"],
             lesson=commentary[lang]["lesson"],
