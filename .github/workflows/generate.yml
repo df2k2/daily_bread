@@ -27,7 +27,8 @@ jobs:
   generate:
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: write   # commit/push generated content
+      actions: write    # dispatch the deploy workflow
     steps:
       - uses: actions/checkout@v4
 
@@ -53,13 +54,24 @@ jobs:
           python -m scripts.generate_devotional "${ARGS[@]}"
 
       - name: Commit content
+        id: commit
         run: |
           git config user.name "devotional-bot"
           git config user.email "bot@users.noreply.github.com"
           git add content/ data/state.json data/bibles/
           if git diff --cached --quiet; then
             echo "No changes."
+            echo "committed=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
           git commit -m "devotional: $(date -u +%Y-%m-%d-%H%M)"
           git push
+          echo "committed=true" >> "$GITHUB_OUTPUT"
+
+      # A push from GITHUB_TOKEN won't trigger deploy.yml's `push` event, so
+      # dispatch it explicitly — but only when new content was committed.
+      - name: Deploy site
+        if: steps.commit.outputs.committed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh workflow run deploy.yml --ref "${{ github.ref_name }}"

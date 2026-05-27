@@ -63,8 +63,8 @@ The generate workflow commits `data/state.json` back to the repo, so the cursor 
 
 ## Workflows (`.github/workflows/`)
 
-- **generate.yml** — cron (twice daily) + manual dispatch with reference/slot/skip toggles. Runs the pipeline and commits `content/`, `data/state.json`, and `data/bibles/`.
-- **deploy.yml** — on push to `main` touching `site/**` or `content/**`; builds the Astro site and deploys to GitHub Pages.
+- **generate.yml** — cron (twice daily) + manual dispatch with reference/slot/skip toggles. Runs the pipeline and commits `content/`, `data/state.json`, and `data/bibles/`. When it commits, it dispatches **deploy.yml** (`gh workflow run`), because a `GITHUB_TOKEN` push does not trigger another workflow's `push` event — hence the job's `actions: write` permission.
+- **deploy.yml** — `push` to `main` touching `site/**`/`content/**` (human edits) **or** `workflow_dispatch` (from generate.yml); builds the Astro site and deploys to GitHub Pages.
 - **healthcheck.yml** — hourly; opens/updates a GitHub issue if no `content/` commit landed in the last 26 hours.
 
 Required Actions secrets: `GEMINI_API_KEY` (always), `RESEND_API_KEY` (email), `TWILIO_SID`/`TWILIO_TOKEN` (SMS).

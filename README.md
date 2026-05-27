@@ -56,6 +56,8 @@ The site reads markdown from `../content/` via Astro 5's `glob` content loader.
 
 Generate runs twice a day on cron (~06:00 and ~18:00 America/Los_Angeles, with ~10 min margin for GH Actions cron drift). The run times are defined by the cron lines in `.github/workflows/generate.yml` — change them there to reschedule. `config.yml` → `schedule.frequency`/`times` are reference-only (not read by the pipeline); only `schedule.timezone` is consumed, to pick the morning/evening slot and localize dates.
 
+When a run commits new content, `generate.yml` dispatches the **Deploy site** workflow so the site rebuilds immediately. (This is an explicit dispatch because a commit pushed with the built-in `GITHUB_TOKEN` does not, by design, trigger `deploy.yml`'s own `push` trigger.) Human pushes that touch `site/**` or `content/**` still deploy via that `push` trigger as before.
+
 A separate `healthcheck.yml` workflow runs hourly and opens a GitHub issue if no new content has been committed in the last 26 hours, so a silently-failing cron won't go unnoticed.
 
 ### Companion devotionals
